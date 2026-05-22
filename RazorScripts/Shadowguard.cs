@@ -251,7 +251,7 @@ namespace RazorScripts
             fg.buttonid = buttonId;
             Gumps.AddBackground(ref fg, 0, 0, width, marginTop, 1755);
             Gumps.AddLabel(ref fg, 15, 15, _gumpHueInfo, "Shadowguard by Dorana");
-            Gumps.AddLabel(ref fg, 15, 40, _gumpHueInfo, "Rurrent Room: ");
+            Gumps.AddLabel(ref fg, 15, 40, _gumpHueInfo, "Current Room: ");
             Gumps.AddLabel(ref fg, 105, 40, _gumpHueActiveInfo, roomData.Room.ToString());
             Gumps.AddLabel(ref fg, 260, 15, _gumpHueInfo, "Running :");
             Gumps.AddButton(ref fg, 320, 18, (_runningMaster ? 11400 : 11410), _runningMaster ? 11402 : 11412,
