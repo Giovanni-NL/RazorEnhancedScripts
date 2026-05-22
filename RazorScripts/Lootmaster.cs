@@ -2420,42 +2420,42 @@ namespace RazorScripts
 
         public static bool ValidateVersion(string readConfigVersion, string scriptVersion)
         {
-            if(string.IsNullOrEmpty(readConfigVersion))
+            if (string.IsNullOrEmpty(readConfigVersion))
             {
-                //Read Config has no known version, the means it's either older or nonexisting
                 return true;
             }
-            
-            var svStrip = scriptVersion.Replace("v", "");
-            var rvStrip = readConfigVersion.Replace("v", "");
-            //split version into parts
-            var svParts = svStrip.Split('.');
-            var rvParts = rvStrip.Split('.');
-            //compare major version
-            var isOk = true;
-            if(int.TryParse(svParts[0], out var svMajor) && int.TryParse(rvParts[0], out var rvMajor))
+
+            if (string.IsNullOrEmpty(scriptVersion))
             {
-                if (svMajor < rvMajor)
-                {
-                    isOk = false;
-                }
-            }
-            if(isOk && int.TryParse(svParts[1], out var svMinor) && int.TryParse(rvParts[1], out var rvMinor))
-            {
-                if (svMinor < rvMinor)
-                {
-                    isOk = false;
-                }
-            }
-            if(isOk && int.TryParse(svParts[2], out var svRevision) && int.TryParse(rvParts[2], out var rvRevision))
-            {
-                if (svRevision < rvRevision)
-                {
-                    isOk = false;
-                }
+                // If script version missing, consider it not newer
+                return false;
             }
 
-            return isOk;
+            string Normalize(string v) => v.Trim().TrimStart('v', 'V');
+
+            var svParts = Normalize(scriptVersion).Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            var rvParts = Normalize(readConfigVersion).Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var maxLen = Math.Max(svParts.Length, rvParts.Length);
+
+            for (int i = 0; i < maxLen; i++)
+            {
+                int sv = 0;
+                int rv = 0;
+
+                if (i < svParts.Length)
+                    int.TryParse(Regex.Match(svParts[i], @"^\d+").Value, out sv);
+
+                if (i < rvParts.Length)
+                    int.TryParse(Regex.Match(rvParts[i], @"^\d+").Value, out rv);
+
+                if (sv > rv) return true;
+                if (sv < rv) return false;
+                // otherwise continue to next part
+            }
+
+            // All parts equal
+            return true;
         }
     }
 
@@ -5495,7 +5495,4 @@ namespace RazorScripts
             list.Add(item);
         }
     }
-    
-    
-    
 }
