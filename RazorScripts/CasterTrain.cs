@@ -252,11 +252,23 @@ namespace RazorScripts
 
                 foreach (var spell in skillList)
                 {
-                    if (skill < spell.SkillLevel)
+                    if (skill < spell.ToSkillLevel)
                     {
                         castFunc.Invoke(spell.SpellName, _player, true);
                         Misc.Pause(spell.WaitTime);
                         UpdateGump(casterKey);
+                        
+                        //Special case for spells that changes your form
+                        if(string.IsNullOrEmpty(spell.DoNotEndOnBuff))
+                        {
+                            while(Player.BuffsExist(spell.DoNotEndOnBuff))
+                            {
+                                castFunc.Invoke(spell.SpellName, _player, true);
+                                Misc.Pause(spell.WaitTime);
+                                UpdateGump(casterKey);
+                            }
+                        }
+                        
                         break;
                     }
                 }
@@ -338,63 +350,63 @@ namespace RazorScripts
             if (_spellSchools["Magery"] > 0)
             {
                 var spellList = new List<SpellSkill>();
-                spellList.Add(new SpellSkill {SkillLevel = 45, SpellName = "Fireball",});
-                spellList.Add(new SpellSkill {SkillLevel = 55, SpellName = "Lightning",});
-                spellList.Add(new SpellSkill {SkillLevel = 65, SpellName = "Paralyse",});
-                spellList.Add(new SpellSkill {SkillLevel = 75, SpellName = "Reveal",});
-                spellList.Add(new SpellSkill {SkillLevel = 90, SpellName = "Flame Strike",});
-                spellList.Add(new SpellSkill {SkillLevel = 120, SpellName = "Earthquake",WaitTime = 5000});
+                spellList.Add(new SpellSkill {ToSkillLevel = 45, SpellName = "Fireball",});
+                spellList.Add(new SpellSkill {ToSkillLevel = 55, SpellName = "Lightning",});
+                spellList.Add(new SpellSkill {ToSkillLevel = 65, SpellName = "Paralyse",});
+                spellList.Add(new SpellSkill {ToSkillLevel = 75, SpellName = "Reveal",});
+                spellList.Add(new SpellSkill {ToSkillLevel = 90, SpellName = "Flame Strike",});
+                spellList.Add(new SpellSkill {ToSkillLevel = 120, SpellName = "Earthquake",WaitTime = 5000});
                 _castHolder.Add("Magery", spellList);
             }
             if (_spellSchools["Mysticism"] > 0)
             {
                 var spellList = new List<SpellSkill>();
-                spellList.Add(new SpellSkill {SkillLevel = 60, SpellName = "Stone Form"});
-                spellList.Add(new SpellSkill {SkillLevel = 80, SpellName = "Cleansing Winds"});
-                spellList.Add(new SpellSkill {SkillLevel = 95, SpellName = "Hail Storm"});
-                spellList.Add(new SpellSkill {SkillLevel = 120, SpellName = "Nether Cyclone"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 60, SpellName = "Stone Form"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 80, SpellName = "Cleansing Winds"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 95, SpellName = "Hail Storm"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 120, SpellName = "Nether Cyclone"});
                 _castHolder.Add("Mysticism", spellList);
             }
             if(_spellSchools["Necromancy"] > 0)
             {
                 var spellList = new List<SpellSkill>();
-                spellList.Add(new SpellSkill {SkillLevel = 50, SpellName = "Pain Spike"});
-                spellList.Add(new SpellSkill {SkillLevel = 70, SpellName = "Horrific Beast", DoNotEndOnBuff = "Horrific Beast"});
-                spellList.Add(new SpellSkill {SkillLevel = 90, SpellName = "Wither"});
-                spellList.Add(new SpellSkill {SkillLevel = 95, SpellName = "Lich Form", DoNotEndOnBuff = "Lich Form"});
-                spellList.Add(new SpellSkill {SkillLevel = 120, SpellName = "Vampiric Embrace"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 50, SpellName = "Pain Spike"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 70, SpellName = "Horrific Beast", DoNotEndOnBuff = "Horrific Beast"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 90, SpellName = "Wither"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 100, SpellName = "Lich Form", DoNotEndOnBuff = "Lich Form"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 120, SpellName = "Vampiric Embrace"});
                 _castHolder.Add("Necromancy", spellList);
             }
             if(_spellSchools["Chivalry"] > 0)
             {
                 var spellList = new List<SpellSkill>();
-                spellList.Add(new SpellSkill {SkillLevel = 45, SpellName = "Consecrate Weapon"});
-                spellList.Add(new SpellSkill {SkillLevel = 60, SpellName = "Divine Fury"});
-                spellList.Add(new SpellSkill {SkillLevel = 70, SpellName = "Enemy of One"});
-                spellList.Add(new SpellSkill {SkillLevel = 90, SpellName = "Holy Light"});
-                spellList.Add(new SpellSkill {SkillLevel = 120, SpellName = "Noble Sacrifice"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 45, SpellName = "Consecrate Weapon"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 60, SpellName = "Divine Fury"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 70, SpellName = "Enemy of One"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 90, SpellName = "Holy Light"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 120, SpellName = "Noble Sacrifice"});
                 _castHolder.Add("Chivalry", spellList);
             }
             if(_spellSchools["Spellweaving"] > 0)
             {
                 var spellList = new List<SpellSkill>();
-                spellList.Add(new SpellSkill {SkillLevel = 20, SpellName = "Arcane Circle"});
-                spellList.Add(new SpellSkill {SkillLevel = 33, SpellName = "Immolating Weapon", WaitTime = 9000});
-                spellList.Add(new SpellSkill {SkillLevel = 52, SpellName = "Reaper Form", DoNotEndOnBuff = "Reaper Form"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 20, SpellName = "Arcane Circle"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 33, SpellName = "Immolating Weapon", WaitTime = 9000});
+                spellList.Add(new SpellSkill {ToSkillLevel = 52, SpellName = "Reaper Form", DoNotEndOnBuff = "Reaper Form"});
                 // spellList.Add(new SpellSkill {SkillLevel = 55, SpellName = "Summon Fey"});
-                spellList.Add(new SpellSkill {SkillLevel = 74, SpellName = "Essence of Wind"});
-                spellList.Add(new SpellSkill {SkillLevel = 90, SpellName = "Wildfire", WaitTime = 3000});
-                spellList.Add(new SpellSkill {SkillLevel = 120, SpellName = "Word of Death"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 74, SpellName = "Essence of Wind"});
+                spellList.Add(new SpellSkill {ToSkillLevel = 90, SpellName = "Wildfire", WaitTime = 3000});
+                spellList.Add(new SpellSkill {ToSkillLevel = 120, SpellName = "Word of Death"});
                 _castHolder.Add("Spellweaving", spellList);
             }
         }
-    }
 
-    public class SpellSkill
-    {
-        public int SkillLevel { get; set; }
-        public string SpellName { get; set; }
-        public int WaitTime { get; set; } = 4000;
-        public string DoNotEndOnBuff { get; set; }
+        private class SpellSkill
+        {
+            public int ToSkillLevel { get; set; }
+            public string SpellName { get; set; }
+            public int WaitTime { get; set; } = 4000;
+            public string DoNotEndOnBuff { get; set; }
+        }
     }
 }
