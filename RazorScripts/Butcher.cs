@@ -86,8 +86,7 @@ namespace Razorscripts
 
             if (_scissorsItem == null)
             {
-                Misc.SendMessage("Unable to locate scissors", 201);
-                return;
+                Misc.SendMessage("Scissors not found, hides will not be cut.", 201);
             }
 
             var corpses = Items.ApplyFilter(new Items.Filter
@@ -215,8 +214,8 @@ namespace Razorscripts
             foreach (var stackItem in stack)
             {
                 Items.Move(stackItem, Player.Backpack.Serial, stackItem?.Amount ?? int.MaxValue);
-				
-                if (stackItem.ItemID == _hide) 
+                
+                if (stackItem.ItemID == _hide && _scissorsItem != null) 
                 {
                     Misc.SendMessage("Cutting hides", 201);
                     Misc.Pause(300);
